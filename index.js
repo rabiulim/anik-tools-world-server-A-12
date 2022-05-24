@@ -17,6 +17,7 @@ async function run() {
         await client.connect();
         const toolCollection = client.db('anik_tools_world').collection('tools');
         const reviewCollection = client.db('anik_tools_world').collection('reviews');
+        const userInfoCollection = client.db('anik_tools_world').collection('userInfo');
 
         app.get('/tool', async (req, res) => {
             const query = {};
@@ -39,6 +40,12 @@ async function run() {
             const result = await reviewCollection.insertOne(review);
             res.send(result)
         })
+        app.post('/userinfo', async (req, res) => {
+            const userInfo = req.body;
+            console.log('adding new user')
+            const result = await userInfoCollection.insertOne(userInfo);
+            res.send(result)
+        })
 
         app.get('/review', async (req, res) => {
             const query = {};
@@ -47,19 +54,19 @@ async function run() {
             res.send(reviews);
         })
 
-        app.put('/tool/:id', async (req, res) => {
-            const id = req.params.id;
-            const updateQuantity = req.body;
-            const filter = { _id: ObjectId(id) };
-            const options = { upsert: true }
-            const updateDoc = {
-                $set: {
-                    availableQuantity: updateQuantity.quantity
-                }
-            }
-            const result = await toolCollection.updateOne(filter, updateDoc, options)
-            res.send(result)
-        })
+        // app.put('/tool/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const updateQuantity = req.body;
+        //     const filter = { _id: ObjectId(id) };
+        //     const options = { upsert: true }
+        //     const updateDoc = {
+        //         $set: {
+        //             availableQuantity: updateQuantity.quantity
+        //         }
+        //     }
+        //     const result = await toolCollection.updateOne(filter, updateDoc, options)
+        //     res.send(result)
+        // })
 
     }
     finally {
