@@ -16,6 +16,7 @@ async function run() {
     try {
         await client.connect();
         const toolCollection = client.db('anik_tools_world').collection('tools');
+        const reviewCollection = client.db('anik_tools_world').collection('reviews');
 
         app.get('/tool', async (req, res) => {
             const query = {};
@@ -30,6 +31,21 @@ async function run() {
             const result = await toolCollection.findOne(query);
             res.send(result)
         })
+
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            console.log('adding new review')
+            const result = await reviewCollection.insertOne(review);
+            res.send(result)
+        })
+
+        app.get('/review', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
+
     }
     finally {
 
