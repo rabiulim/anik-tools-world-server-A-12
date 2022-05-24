@@ -32,6 +32,7 @@ async function run() {
             res.send(result)
         })
 
+
         app.post('/review', async (req, res) => {
             const review = req.body;
             console.log('adding new review')
@@ -44,6 +45,20 @@ async function run() {
             const cursor = reviewCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
+        })
+
+        app.put('/tool/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateQuantity = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    availableQuantity: updateQuantity.quantity
+                }
+            }
+            const result = await toolCollection.updateOne(filter, updateDoc, options)
+            res.send(result)
         })
 
     }
