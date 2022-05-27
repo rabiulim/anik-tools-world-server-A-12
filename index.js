@@ -128,6 +128,13 @@ async function run() {
             res.send(result);
         });
 
+        app.get('/order/:id', verifyJWTToken, async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const order = await orderCollection.findOne(query);
+            res.send(order)
+        })
+
         app.get('/allorder', verifyJWTToken, async (req, res) => {
             const orders = await orderCollection.find().toArray();
             res.send(orders)
