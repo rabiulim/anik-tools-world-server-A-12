@@ -44,6 +44,13 @@ async function run() {
             res.send(tools);
         })
 
+        app.post('/tool', async (req, res) => {
+            const productInfo = req.body;
+            console.log('adding new product')
+            const result = await toolCollection.insertOne(productInfo);
+            res.send(result)
+        })
+
         app.get('/tool/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
