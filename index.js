@@ -36,6 +36,7 @@ async function run() {
         const reviewCollection = client.db('anik_tools_world').collection('reviews');
         const orderCollection = client.db('anik_tools_world').collection('orders');
         const userCollection = client.db('anik_tools_world').collection('users');
+        const profileCollection = client.db('anik_tools_world').collection('profiles');
 
 
         const verifyAdmin = async (req, res, next) => {
@@ -48,6 +49,8 @@ async function run() {
                 res.status(403).send({ message: 'forbidden access' });
             }
         }
+
+
 
         app.get('/tool', async (req, res) => {
             const query = {};
@@ -63,14 +66,14 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/tool/:id', async (req, res) => {
+        app.get('/tool/:id', verifyJWTToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await toolCollection.findOne(query);
             res.send(result)
         })
 
-        app.delete('/tool/:id', async (req, res) => {
+        app.delete('/tool/:id', verifyJWTToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await toolCollection.deleteOne(query);
@@ -128,8 +131,9 @@ async function run() {
             res.send(result);
         });
 
-        app.get('/order/:id', verifyJWTToken, async (req, res) => {
+        app.get('/order/payment/:id', async (req, res) => {
             const id = req.params.id;
+            console.log(id)
             const query = { _id: ObjectId(id) };
             const order = await orderCollection.findOne(query);
             res.send(order)
@@ -167,6 +171,12 @@ async function run() {
             const reviews = await cursor.toArray();
             res.send(reviews);
         })
+
+        // app.get('/profile', async (req, res) => {
+
+        //     const profiles = await profileCollection.find().toArray;
+        //     res.send(profiles)
+        // })
 
     }
     finally {
